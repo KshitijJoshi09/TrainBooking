@@ -4,7 +4,7 @@
 <body>
 
 	<h3>
-		<a href="#">sign in</a>
+		<a href="displaySignInPage">sign in</a>
 	</h3>
 	<h3>
 		<a href="#">search train</a>
