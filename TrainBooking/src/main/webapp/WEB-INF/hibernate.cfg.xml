@@ -15,7 +15,7 @@
 		<property name="hbm2ddl.auto">update</property>
 
 
-		<!-- <mapping class = "com.spiders.domain.UserDto"/> -->
+		 <mapping class = "com.booking.app.dto.User"/> 
 
 	</session-factory>
 </hibernate-configuration>
