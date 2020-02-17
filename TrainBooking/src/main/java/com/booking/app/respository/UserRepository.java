@@ -27,7 +27,7 @@ public class UserRepository {
 			user = hql.uniqueResult();
 
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return user;
 	}

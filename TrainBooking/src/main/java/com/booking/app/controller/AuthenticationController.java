@@ -41,18 +41,13 @@ public class AuthenticationController {
 		return "signInPage";
 	}
 	
-	
-	
-	
 	// logic for Authorization
-	if(userFromDB != null &&userFromDB.getRole().equals(Constants.ROLE_ADMIN)) {
+	if(userFromDB != null && userFromDB.getRole().equals(Constants.ROLE_ADMIN)) {
 		return "adminDashboardPage";
 	}
 	else if(userFromDB != null &&userFromDB.getRole().equals(Constants.ROLE_USER)) {
 		return "userDashboardPage";
 	}
-	
-	
 		return "signInPage";
 	}
 	
