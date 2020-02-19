@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.booking.app.dto.Train;
 import com.booking.app.service.TrainService;
@@ -29,32 +30,29 @@ public class TrainController {
 
 	// this method is to get data from <form>tag
 	// in saveTrainPage.jsp file
-	@RequestMapping(value = "/saveTrain", 
-			method = RequestMethod.POST)
-	public String saveTrain(Train train, BindingResult result,
-			Model model) {
+	@RequestMapping(value = "/saveTrain", method = RequestMethod.POST)
+	public String saveTrain(Train train, BindingResult result, Model model) {
 		System.out.println(train);
 
 		if (result.hasErrors()) {
 			List<FieldError> errors = result.getFieldErrors();
-			
+
 			for (FieldError fieldError : errors) {
-				model.addAttribute
-				(fieldError.getField(), "this filed has some error");
+				model.addAttribute(fieldError.getField(), "this filed has some error");
 			}
 
 			/*
 			 * String errorNames = "";
 			 * 
-			 * for (FieldError fieldError : errors) { 
-			 *  errorNames += fieldError.getField() +" "; }
+			 * for (FieldError fieldError : errors) { errorNames += fieldError.getField()
+			 * +" "; }
 			 * 
 			 * System.out.println("wrong data entered in " +errorNames);
 			 * model.addAttribute("msg", "wrong data entered in " +errorNames);
 			 */
-			
+
 			return "saveTrainPage";
-			
+
 		}
 
 		int pk = trainService.saveTrain(train);
@@ -68,10 +66,30 @@ public class TrainController {
 
 		return "saveTrainPage";
 	}
-	
-	// redirect to seacrh page 
+
+	// redirect to seacrh page
 	@RequestMapping("/searchTrainPage")
 	public String searchTrainPage() {
+		return "searchTrainPage";
+	}
+
+	@RequestMapping("/searchTrainByDestination")
+	public String searchTrain(@RequestParam String from, @RequestParam String to, Model model) {
+		System.out.println("from -> " + from + "   to -> " + to);
+
+		// logic to find train from db
+		List<Train> trains = trainService.searchTrainByDestination(from, to);
+		
+		if (trains == null || trains.size() <= 0) {
+			System.out.println("No trains avalilable");
+		}
+
+		for (Train train : trains) {
+			System.out.println(train);
+		}
+
+		// return it to the same page
+		// so that he can search more options
 		return "searchTrainPage";
 	}
 
