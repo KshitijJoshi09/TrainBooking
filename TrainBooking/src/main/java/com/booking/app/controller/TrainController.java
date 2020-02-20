@@ -80,16 +80,13 @@ public class TrainController {
 		// logic to find train from db
 		List<Train> trains = trainService.searchTrainByDestination(from, to);
 		
-		if (trains == null || trains.size() <= 0) {
-			System.out.println("No trains avalilable");
+		if (trains == null || trains.size() == 0) {
+			model.addAttribute("msg", "No trains available from current locations");
+		}
+		else {
+			model.addAttribute("trains", trains);
 		}
 
-		for (Train train : trains) {
-			System.out.println(train);
-		}
-
-		// return it to the same page
-		// so that he can search more options
 		return "searchTrainPage";
 	}
 
