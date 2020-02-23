@@ -23,41 +23,51 @@ public class AppController {
 	@RequestMapping("/")
 	String entryPoint(HttpServletRequest request, HttpServletResponse response) {
 
+		System.out.println("Entry point of Project");
+
 		String userCred = "";
 		String password = "";
-//
-//		Cookie[] cookies = request.getCookies();
-//
-//		if (cookies != null) {
-//			for (Cookie cookie : cookies) {
-//				if (cookie.getName().equals("user")) {
-//					userCred = cookie.getValue();
-//				} else if (cookie.getName().equals("password")) {
-//					password = cookie.getValue();
-//				}
-//			}
-//		}
-//
-//		// get object from dataBAse and check for authentication and authrization
+
 		HttpSession httpSession = request.getSession();
-		User userFromSession =  (User)httpSession.getAttribute("userData");
+		User userFromSession = (User) httpSession.getAttribute("userData");
 		System.out.println(userFromSession);
-		
-		
-//		
-//		if (userCred.length() > 0 && password.length() > 0) {
-//			User userFromDB = userService.findUserByEmailOrMobileNoOrUserName(userCred);
-//			if (userFromDB != null && userFromDB.getRole().equals(Constants.ROLE_ADMIN)) {
-//				return "adminDashboardPage";
-//			} else if (userFromDB != null && userFromDB.getRole().equals(Constants.ROLE_USER)) {
-//				return "userDashboardPage";
-//			}
-//		}
-//		
-		
-		
-		
-		System.out.println("Entry point of Project");
+
+		// if session doesn't have user Object return to dashboard directly
+		// else check for the role and return to dashboard
+		if (userFromSession != null) {
+			if (userFromSession != null && userFromSession.getRole().equals(Constants.ROLE_ADMIN)) {
+				return "adminDashboardPage";
+			} else if (userFromSession != null && userFromSession.getRole().equals(Constants.ROLE_USER)) {
+				return "userDashboardPage";
+			}
+		} else {
+			Cookie[] cookies = request.getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("user")) {
+						userCred = cookie.getValue();
+					} else if (cookie.getName().equals("password")) {
+						password = cookie.getValue();
+					}
+				}
+				
+				if (userCred.length() > 0 && password.length() > 0) {
+					
+					// get the Object the from DB ,add Store the object httpSession
+					User userFromDB = userService.findUserByEmailOrMobileNoOrUserName(userCred);
+					httpSession.setAttribute("userData", userFromDB );
+					
+					if (userFromDB != null && userFromDB.getRole().equals(Constants.ROLE_ADMIN)) {
+						return "adminDashboardPage";
+					} else if (userFromDB != null && userFromDB.getRole().equals(Constants.ROLE_USER)) {
+						return "userDashboardPage";
+					}
+				}
+
+			}
+			return "index";
+		}
+
 		return "index";
 
 	}
