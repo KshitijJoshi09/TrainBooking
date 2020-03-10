@@ -7,6 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 public class Train implements Serializable {
@@ -15,15 +22,19 @@ public class Train implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "TRAIN_NO")
+	@Column(name = "TRAIN_NO" , nullable=false)
 	private int trainNo;
 
+	@Length(min = 3 , max = 30 , message = "Name should contain chars btw 3 and 30")
 	@Column(name = "TRAIN_NAME")
+	@NotEmpty(message = "field cant be empty")
 	private String trainName;
 
 	@Column(name = "TRAIN_TYPE")
 	private String trainType;
 
+	@Max(value = 10000 , message = "price so")
+	@Min(value = 0 , message ="price should be greater thn 0")
 	@Column(name = "TRAIN_FARE")
 	private double trainFare;
 
@@ -33,6 +44,10 @@ public class Train implements Serializable {
 	@Column(name = "DESTINATION_POINT")
 	private String destinationPoint;
 
+	@Transient
+	private String dummyValues;
+	
+	
 	public int getId() {
 		return id;
 	}

@@ -17,6 +17,11 @@ public class UserService {
 		return user;
 	}
 
+	public int addUser(User user) {
+		// TODO Auto-generated method stub
+		return userRepository.addUser(user);
+	}
+
 	
 	
 	

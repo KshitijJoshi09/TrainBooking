@@ -18,37 +18,27 @@
 
 
 	<context:component-scan base-package="com" />
+	<mvc:annotation-driven/>
+	<context:annotation-config/>
 
 
-	<bean id="resolver" 
-	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<bean id="resolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="suffix" value=".jsp"></property>
 		<property name="prefix" value="/WEB-INF/views/"></property>
 	</bean>
-	
-	
-	<bean id = "sessionFactory"
-	class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-	<property name="configLocations" 
-	value="/WEB-INF/hibernate.cfg.xml"
-		></property>
+
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="configLocations"
+			value="/WEB-INF/hibernate.cfg.xml"></property>
 	</bean>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	<bean
+		class="org.springframework.context.support.ResourceBundleMessageSource"
+		id="messageSource">
+		<property name="basename" value="messages" />
+	</bean>
 
 </beans> 

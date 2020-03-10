@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
 
 // this class will store information of user 
 @Entity
@@ -22,6 +23,7 @@ public class User implements Serializable {
 	@Column(name = "PASSWORD")
 	private String password;
 
+	@Email(message = "wrong email format")
 	@Column(name = "EMAIL", nullable = false, unique = true)
 	private String email;
 

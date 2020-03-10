@@ -2,12 +2,15 @@ package com.booking.app.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,25 +34,15 @@ public class TrainController {
 	// this method is to get data from <form>tag
 	// in saveTrainPage.jsp file
 	@RequestMapping(value = "/saveTrain", method = RequestMethod.POST)
-	public String saveTrain(Train train, BindingResult result, Model model) {
+	public String saveTrain(@Valid Train train, BindingResult result, Model model) {
 		System.out.println(train);
 
 		if (result.hasErrors()) {
 			List<FieldError> errors = result.getFieldErrors();
 
 			for (FieldError fieldError : errors) {
-				model.addAttribute(fieldError.getField(), "this filed has some error");
+				model.addAttribute(fieldError.getField(), fieldError.getDefaultMessage());
 			}
-
-			/*
-			 * String errorNames = "";
-			 * 
-			 * for (FieldError fieldError : errors) { errorNames += fieldError.getField()
-			 * +" "; }
-			 * 
-			 * System.out.println("wrong data entered in " +errorNames);
-			 * model.addAttribute("msg", "wrong data entered in " +errorNames);
-			 */
 
 			return "saveTrainPage";
 
@@ -73,21 +66,78 @@ public class TrainController {
 		return "searchTrainPage";
 	}
 
+	@RequestMapping("/admin/searchTrainPage")
+	public String adminSearchTrainPage(Model model) {
+		List<Train> trains = trainService.searchTrainByDestination("", "");
+
+		if (trains == null || trains.size() == 0) {
+			model.addAttribute("msg", "No trains available from current locations");
+		} else {
+			model.addAttribute("trains", trains);
+		}
+		return "adminAllTrainPage";
+	}
+
 	@RequestMapping("/searchTrainByDestination")
-	public String searchTrain(@RequestParam String from, @RequestParam String to, Model model) {
+	public String searchTrain(@RequestParam(defaultValue = "") String from, @RequestParam(defaultValue = "") String to,
+			Model model) {
 		System.out.println("from -> " + from + "   to -> " + to);
 
 		// logic to find train from db
 		List<Train> trains = trainService.searchTrainByDestination(from, to);
-		
+
 		if (trains == null || trains.size() == 0) {
 			model.addAttribute("msg", "No trains available from current locations");
-		}
-		else {
+		} else {
 			model.addAttribute("trains", trains);
 		}
 
 		return "searchTrainPage";
+	}
+
+	@RequestMapping("/deleteTrainPage/{id}")
+	public String deleteTrain(@PathVariable int id, Model model) {
+
+		System.out.println(id);
+		trainService.deleteTrainById(id);
+		List<Train> trains = trainService.searchTrainByDestination("", "");
+
+		if (trains == null || trains.size() == 0) {
+			model.addAttribute("msg", "No trains available from current locations");
+		} else {
+			model.addAttribute("trains", trains);
+		}
+		return "adminAllTrainPage";
+
+	}
+
+	@RequestMapping("/updateTrainPage/{id}")
+	public String UpdateTrainPage(@PathVariable int id, Model model) {
+		Train train = trainService.findTrainById(id);
+		model.addAttribute("train", train);
+		return "udapteTrainPage";
+
+	}
+
+	@RequestMapping("/updateTrain")
+	public String updateTrain(Train train, Model model) {
+
+		System.out.println(train);
+		
+		trainService.updateTrain(train);
+		
+		
+		
+		
+		List<Train> trains = trainService.searchTrainByDestination("", "");
+
+		if (trains == null || trains.size() == 0) {
+			model.addAttribute("msg", "No trains available from current locations");
+		} else {
+			model.addAttribute("trains", trains);
+		}
+		return "adminAllTrainPage";
+
 	}
 
 }
